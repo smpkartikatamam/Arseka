@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARSEKA - Seni Budaya (Tari & Musik Nusantara)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .font-display {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.03);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 10px;
+        }
+
+        /* Keyframe Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        .slide-up {
+            animation: slideUp 0.35s ease-out forwards;
+        }
+        .bounce-slow {
+            animation: bounceSlow 2s infinite;
+        }
+        .pulse-subtle {
+            animation: pulseSubtle 2.5s infinite;
+        }
+        .shake-err {
+            animation: shakeErr 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulseSubtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes shakeErr {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        /* Pattern background */
+        .pattern-batik {
+            background-color: #fdf8f6;
+            background-image: radial-gradient(#e5e7eb 0.75px, transparent 0.75px), radial-gradient(#e5e7eb 0.75px, #fdf8f6 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex items-center justify-center p-0 sm:p-4">
+
+    <!-- Mobile Screen Wrapper (390px x 840px mobile canvas style) -->
+    <div id="appContainer" class="w-full max-w-md h-screen sm:h-[840px] bg-amber-50/50 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-8 border-slate-800 pattern-batik">
+
+        <!-- Top Simulated Mobile Status Bar -->
+        <div class="bg-amber-950 text-amber-200 px-5 pt-3 pb-2 flex justify-between items-center text-xs font-bold z-30 select-none shadow-sm">
+            <div class="flex items-center space-x-1.5">
+                <i class="fa-solid fa-masks-theater text-amber-400"></i>
+                <span class="tracking-wider">ARSEKA SENI BUDAYA</span>
+            </div>
+            <div class="flex items-center space-x-2 text-[11px]">
+                <span id="topTime">10:00</span>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- Toast Notification Layer -->
+        <div id="toastNotification" class="absolute top-12 left-4 right-4 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+            <div id="toastContent" class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-xs border-2 border-amber-500">
+                <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400 text-base"></i>
+                <span id="toastMessage" class="font-semibold">Notifikasi aplikasi</span>
+            </div>
+        </div>
+
+        <!-- Name Input Modal Overlay -->
+        <div id="nameModalOverlay" class="hidden absolute inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-300">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-xs shadow-2xl border-4 border-amber-500 text-center space-y-4 slide-up">
+                <div class="w-16 h-16 bg-amber-100 rounded-full mx-auto flex items-center justify-center text-3xl text-amber-800 shadow-inner pulse-subtle">
+                    🎭
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-800 font-display">Siswa Nusantara</h3>
+                    <p class="text-xs text-slate-500 font-medium">Masukkan namamu untuk memulai eksplorasi Seni Budaya!</p>
+                </div>
+                <div class="space-y-1.5 text-left">
+                    <label class="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">Nama Lengkap Siswa:</label>
+                    <input type="text" id="studentNameInput" placeholder="Contoh: Siti Rahmawati" class="w-full px-4 py-3 bg-amber-50/50 border border-amber-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+                <button onclick="saveStudentName()" class="w-full bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-extrabold py-3 rounded-2xl shadow-md transition-all text-xs uppercase tracking-wider">
+                    SIMPAN & MULAI <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN VIEWPORT SCREEN AREA -->
+        <div id="viewport" class="flex-1 overflow-y-auto relative pb-20 scroll-smooth">
+
+            <!-- ========================================== -->
+            <!-- SCREEN 1: FLASH SCREEN / SPLASH SCREEN     -->
+            <!-- ========================================== -->
+            <section id="screen-splash" class="screen-view min-h-full flex flex-col items-center justify-between p-6 text-center bg-gradient-to-b from-amber-950 via-amber-900 to-amber-950 text-white fade-in relative overflow-hidden">
+                <!-- Background visual glow decorative elements -->
+                <div class="absolute -top-12 -left-12 w-40 h-40 bg-amber-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="pt-8 space-y-2">
+                    <span class="bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                        KURIKULUM MERDEKA • SMP/SMA
+                    </span>
+                    <h1 class="text-3xl font-black font-display text-amber-300 tracking-tight drop-shadow-md">
+                        ARSEKA
+                    </h1>
+                    <p class="text-xs font-semibold text-amber-100 tracking-wider uppercase">
+                        Seni Budaya Nusantara
+                    </p>
+                </div>
+
+                <!-- Center Animated Emblem -->
+                <div class="my-auto py-6 space-y-4">
+                    <div class="w-32 h-32 mx-auto bg-gradient-to-tr from-amber-500 to-amber-300 rounded-3xl p-1 shadow-2xl flex items-center justify-center bounce-slow">
+                        <div class="w-full h-full bg-amber-950 rounded-[22px] flex flex-col items-center justify-center p-3 text-center border border-amber-400/40">
+                            <span class="text-5xl mb-1">🎭</span>
+                            <span class="text-[10px] font-black text-amber-200 tracking-widest uppercase">Tari & Musik</span>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <h2 class="text-base font-bold text-amber-100">Eksplorasi Harmony & Gerak</h2>
+                        <p class="text-xs text-amber-200/80 max-w-xs mx-auto leading-relaxed">
+                            Mengenal Keanekaragaman Tari dan Musik Tradisional Indonesia secara Interaktif.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Splash Bottom Action Button -->
+            <div class="w-full space-y-3 pb-4">
+                <button onclick="startAppFromSplash()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 active:scale-95 text-amber-950 font-black py-3.5 px-6 rounded-2xl shadow-lg transition-all text-xs tracking-wider uppercase flex items-center justify-center space-x-2 border border-amber-300">
+                    <span>MASUK APLIKASI</span>
+                    <i class="fa-solid fa-circle-play text-sm"></i>
+                </button>
+                <p class="text-[10px] text-amber-300/70 font-semibold">Media Pembelajaran Interaktif Seni Budaya</p>
+            </div>
+        </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 2: DAFTAR ISI / DASHBOARD           -->
+            <!-- ========================================== -->
+            <section id="screen-dashboard" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <!-- Personalized Greeting Banner -->
+                <div class="bg-amber-900 text-white rounded-3xl p-4 shadow-md border border-amber-700/60 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-11 h-11 bg-amber-500 rounded-2xl flex items-center justify-center text-xl shadow-inner border border-amber-300">
+                            👨‍🎓
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-300 uppercase block tracking-wider">Selamat Belajar,</span>
+                            <h2 id="dashGreetingName" class="text-sm font-black text-amber-50">Siswa Nusantara 👋</h2>
+                        </div>
+                    </div>
+                    <button onclick="openNameModal()" class="text-[10px] font-extrabold bg-amber-800 hover:bg-amber-700 text-amber-200 px-2.5 py-1.5 rounded-xl border border-amber-600 transition-all">
+                        <i class="fa-solid fa-pen text-[9px] mr-1"></i> Edit
+                    </button>
+                </div>
+
+                <!-- Hero Cultural Card Banner -->
+                <div class="relative bg-gradient-to-br from-amber-800 via-amber-900 to-stone-900 text-white rounded-3xl p-5 shadow-lg overflow-hidden border border-amber-600/30">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-amber-500/30 text-amber-300 text-[10px] font-extrabold px-3 py-1 rounded-full border border-amber-400/20">
+                            Seni Budaya SMP/SMA
+                        </span>
+                        <span class="text-[11px] font-semibold text-amber-200 flex items-center gap-1">
+                            <i class="fa-solid fa-star text-amber-400"></i> Modul Utama
+                        </span>
+                    </div>
+
+                    <div class="flex items-center space-x-3 my-3">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-950/80 p-2 border border-amber-500/40 flex items-center justify-center text-3xl flex-shrink-0 pulse-subtle">
+                            🎭
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-amber-300 font-display leading-tight">
+                                TARI & MUSIK TRADISIONAL
+                            </h3>
+                            <p class="text-[11px] text-amber-100 font-semibold mt-0.5">
+                                Warisan Karya Seni Kekayaan Bangsa
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-amber-100/90 leading-relaxed bg-amber-950/40 p-2.5 rounded-xl border border-amber-500/20">
+                        Pelajari ragam gerak tari, irama musik daerah, fungsi instrumen, dan uji kemampuanmu!
+                    </p>
+                </div>
+
+                <!-- DAFTAR ISI MAIN MENU GRID -->
+                <div class="space-y-2.5">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 px-1 flex items-center justify-between">
+                        <span>DAFTAR ISI & MENU UTAMA</span>
+                        <i class="fa-solid fa-list-ul text-amber-600"></i>
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-2.5">
+                        <!-- Menu Item 1: CP & TP -->
+                        <div onclick="navigateTo('cptp')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-amber-200 hover:border-amber-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg font-black">
+                                🎯
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">1. CAPAIAN & TUJUAN (CP & TP)</h4>
+                                <p class="text-[11px] text-slate-500">Target pembelajaran & alur tujuan Kurikulum Merdeka.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 2: Materi Tari -->
+                        <div onclick="navigateToMateriTab('tari')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-rose-200 hover:border-rose-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center text-lg font-black">
+                                💃
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">2. MATERI SENI TARI</h4>
+                                <p class="text-[11px] text-slate-500">Wiraga, Wirama, Wirasa, Pola Lantai & Properti Tari.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 3: Materi Musik -->
+                        <div onclick="navigateToMateriTab('musik')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-emerald-200 hover:border-emerald-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg font-black">
+                                🪕
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">3. MATERI SENI MUSIK</h4>
+                                <p class="text-[11px] text-slate-500">Alat Musik Tradisional, Tangga Nada & Fungsi Musik.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 4: Virtual Studio -->
+                        <div onclick="navigateTo('studio')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-purple-200 hover:border-purple-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-lg font-black">
+                                🎹
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">4. STUDIO GAMELAN & ANGKLUNG</h4>
+                                <p class="text-[11px] text-slate-500">Fitur interaktif membunyikan alat musik tradisional.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 5: Kuis -->
+                        <div onclick="navigateTo('kuis')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-amber-200 hover:border-amber-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg font-black">
+                                📝
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">5. KUIS & EVALUASI</h4>
+                                <p class="text-[11px] text-slate-500">Uji pemahaman 10 soal pilihan ganda interaktif.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Progress Overview Card -->
+                <div class="bg-white p-4 rounded-3xl shadow-xs border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h4 class="text-xs font-black uppercase text-slate-700 tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-line text-amber-600"></i> PROGRES BELAJAR SISWA
+                        </h4>
+                        <span id="dashTotalPercent" class="text-xs font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">
+                            0% Selesai
+                        </span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-600 mb-1">
+                                <span>Materi Tari & Musik Dibaca</span>
+                                <span id="dashMateriStatus">0 / 8 Topik</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div id="dashMateriBar" class="bg-amber-500 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-600 mb-1">
+                                <span>Skor Kuis Terbaik</span>
+                                <span id="dashQuizStatus">0 Poin</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div id="dashQui
