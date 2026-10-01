@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARSEKA - Seni Budaya (Tari & Musik Nusantara)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .font-display {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.03);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 10px;
+        }
+
+        /* Keyframe Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        .slide-up {
+            animation: slideUp 0.35s ease-out forwards;
+        }
+        .bounce-slow {
+            animation: bounceSlow 2s infinite;
+        }
+        .pulse-subtle {
+            animation: pulseSubtle 2.5s infinite;
+        }
+        .shake-err {
+            animation: shakeErr 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulseSubtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes shakeErr {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        /* Pattern background */
+        .pattern-batik {
+            background-color: #fdf8f6;
+            background-image: radial-gradient(#e5e7eb 0.75px, transparent 0.75px), radial-gradient(#e5e7eb 0.75px, #fdf8f6 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex items-center justify-center p-0 sm:p-4">
+
+    <!-- Mobile Screen Wrapper (390px x 840px mobile canvas style) -->
+    <div id="appContainer" class="w-full max-w-md h-screen sm:h-[840px] bg-amber-50/50 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-8 border-slate-800 pattern-batik">
+
+        <!-- Top Simulated Mobile Status Bar -->
+        <div class="bg-amber-950 text-amber-200 px-5 pt-3 pb-2 flex justify-between items-center text-xs font-bold z-30 select-none shadow-sm">
+            <div class="flex items-center space-x-1.5">
+                <i class="fa-solid fa-masks-theater text-amber-400"></i>
+                <span class="tracking-wider">ARSEKA SENI BUDAYA</span>
+            </div>
+            <div class="flex items-center space-x-2 text-[11px]">
+                <span id="topTime">10:00</span>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- Toast Notification Layer -->
+        <div id="toastNotification" class="absolute top-12 left-4 right-4 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+            <div id="toastContent" class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-xs border-2 border-amber-500">
+                <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400 text-base"></i>
+                <span id="toastMessage" class="font-semibold">Notifikasi aplikasi</span>
+            </div>
+        </div>
+
+        <!-- Name Input Modal Overlay -->
+        <div id="nameModalOverlay" class="hidden absolute inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-300">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-xs shadow-2xl border-4 border-amber-500 text-center space-y-4 slide-up">
+                <div class="w-16 h-16 bg-amber-100 rounded-full mx-auto flex items-center justify-center text-3xl text-amber-800 shadow-inner pulse-subtle">
+                    🎭
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-800 font-display">Siswa Nusantara</h3>
+                    <p class="text-xs text-slate-500 font-medium">Masukkan namamu untuk memulai eksplorasi Seni Budaya!</p>
+                </div>
+                <div class="space-y-1.5 text-left">
+                    <label class="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">Nama Lengkap Siswa:</label>
+                    <input type="text" id="studentNameInput" placeholder="Contoh: Siti Rahmawati" class="w-full px-4 py-3 bg-amber-50/50 border border-amber-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+                <button onclick="saveStudentName()" class="w-full bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-extrabold py-3 rounded-2xl shadow-md transition-all text-xs uppercase tracking-wider">
+                    SIMPAN & MULAI <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN VIEWPORT SCREEN AREA -->
+        <div id="viewport" class="flex-1 overflow-y-auto relative pb-20 scroll-smooth">
+
+            <!-- ========================================== -->
+            <!-- SCREEN 1: FLASH SCREEN / SPLASH SCREEN     -->
+            <!-- ========================================== -->
+            <section id="screen-splash" class="screen-view min-h-full flex flex-col items-center justify-between p-6 text-center bg-gradient-to-b from-amber-950 via-amber-900 to-amber-950 text-white fade-in relative overflow-hidden">
+                <!-- Background visual glow decorative elements -->
+                <div class="absolute -top-12 -left-12 w-40 h-40 bg-amber-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="pt-8 space-y-2">
+                    <span class="bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                        KURIKULUM MERDEKA • SMP/SMA
+                    </span>
+                    <h1 class="text-3xl font-black font-display text-amber-300 tracking-tight drop-shadow-md">
+                        ARSEKA
+                    </h1>
+                    <p class="text-xs font-semibold text-amber-100 tracking-wider uppercase">
+                        Seni Budaya Nusantara
+                    </p>
+                </div>
+
+                <!-- Center Animated Emblem -->
+                <div class="my-auto py-6 space-y-4">
+                    <div class="w-32 h-32 mx-auto bg-gradient-to-tr from-amber-500 to-amber-300 rounded-3xl p-1 shadow-2xl flex items-center justify-center bounce-slow">
+                        <div class="w-full h-full bg-amber-950 rounded-[22px] flex flex-col items-center justify-center p-3 text-center border border-amber-400/40">
+                            <span class="text-5xl mb-1">🎭</span>
+                            <span class="text-[10px] font-black text-amber-200 tracking-widest uppercase">Tari & Musik</span>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <h2 class="text-base font-bold text-amber-100">Eksplorasi Harmony & Gerak</h2>
+                        <p class="text-xs text-amber-200/80 max-w-xs mx-auto leading-relaxed">
+                            Mengenal Keanekaragaman Tari dan Musik Tradisional Indonesia secara Interaktif.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Splash Bottom Action Button -->
+            <div class="w-full space-y-3 pb-4">
+                <button onclick="startAppFromSplash()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 active:scale-95 text-amber-950 font-black py-3.5 px-6 rounded-2xl shadow-lg transition-all text-xs tracking-wider uppercase flex items-center justify-center space-x-2 border border-amber-300">
+                    <span>MASUK APLIKASI</span>
+                    <i class="fa-solid fa-circle-play text-sm"></i>
+                </button>
+                <p class="text-[10px] text-amber-300/70 font-semibold">Media Pembelajaran Interaktif Seni Budaya</p>
+            </div>
+        </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 2: DAFTAR ISI / DASHBOARD           -->
+            <!-- ========================================== -->
+            <section id="screen-dashboard" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <!-- Personalized Greeting Banner -->
+                <div class="bg-amber-900 text-white rounded-3xl p-4 shadow-md border border-amber-700/60 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-11 h-11 bg-amber-500 rounded-2xl flex items-center justify-center text-xl shadow-inner border border-amber-300">
+                            👨‍🎓
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-300 uppercase block tracking-wider">Selamat Belajar,</span>
+                            <h2 id="dashGreetingName" class="text-sm font-black text-amber-50">Siswa Nusantara 👋</h2>
+                        </div>
+                    </div>
+                    <button onclick="openNameModal()" class="text-[10px] font-extrabold bg-amber-800 hover:bg-amber-700 text-amber-200 px-2.5 py-1.5 rounded-xl border border-amber-600 transition-all">
+                        <i class="fa-solid fa-pen text-[9px] mr-1"></i> Edit
+                    </button>
+                </div>
+
+                <!-- Hero Cultural Card Banner -->
+                <div class="relative bg-gradient-to-br from-amber-800 via-amber-900 to-stone-900 text-white rounded-3xl p-5 shadow-lg overflow-hidden border border-amber-600/30">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-amber-500/30 text-amber-300 text-[10px] font-extrabold px-3 py-1 rounded-full border border-amber-400/20">
+                            Seni Budaya SMP/SMA
+                        </span>
+                        <span class="text-[11px] font-semibold text-amber-200 flex items-center gap-1">
+                            <i class="fa-solid fa-star text-amber-400"></i> Modul Utama
+                        </span>
+                    </div>
+
+                    <div class="flex items-center space-x-3 my-3">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-950/80 p-2 border border-amber-500/40 flex items-center justify-center text-3xl flex-shrink-0 pulse-subtle">
+                            🎭
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-amber-300 font-display leading-tight">
+                                TARI & MUSIK TRADISIONAL
+                            </h3>
+                            <p class="text-[11px] text-amber-100 font-semibold mt-0.5">
+                                Warisan Karya Seni Kekayaan Bangsa
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-amber-100/90 leading-relaxed bg-amber-950/40 p-2.5 rounded-xl border border-amber-500/20">
+                        Pelajari ragam gerak tari, irama musik daerah, fungsi instrumen, dan uji kemampuanmu!
+                    </p>
+                </div>
+
+                <!-- DAFTAR ISI MAIN MENU GRID -->
+                <div class="space-y-2.5">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 px-1 flex items-center justify-between">
+                        <span>DAFTAR ISI & MENU UTAMA</span>
+                        <i class="fa-solid fa-list-ul text-amber-600"></i>
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-2.5">
+                        <!-- Menu Item 1: CP & TP -->
+                        <div onclick="navigateTo('cptp')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-amber-200 hover:border-amber-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg font-black">
+                                🎯
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">1. CAPAIAN & TUJUAN (CP & TP)</h4>
+                                <p class="text-[11px] text-slate-500">Target pembelajaran & alur tujuan Kurikulum Merdeka.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 2: Materi Tari -->
+                        <div onclick="navigateToMateriTab('tari')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-rose-200 hover:border-rose-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center text-lg font-black">
+                                💃
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">2. MATERI SENI TARI</h4>
+                                <p class="text-[11px] text-slate-500">Wiraga, Wirama, Wirasa, Pola Lantai & Properti Tari.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 3: Materi Musik -->
+                        <div onclick="navigateToMateriTab('musik')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-emerald-200 hover:border-emerald-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg font-black">
+                                🪕
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">3. MATERI SENI MUSIK</h4>
+                                <p class="text-[11px] text-slate-500">Alat Musik Tradisional, Tangga Nada & Fungsi Musik.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 4: Virtual Studio -->
+                        <div onclick="navigateTo('studio')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-purple-200 hover:border-purple-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-lg font-black">
+                                🎹
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">4. STUDIO GAMELAN & ANGKLUNG</h4>
+                                <p class="text-[11px] text-slate-500">Fitur interaktif membunyikan alat musik tradisional.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <!-- Menu Item 5: Kuis -->
+                        <div onclick="navigateTo('kuis')" class="bg-white p-3.5 rounded-2xl shadow-xs border border-amber-200 hover:border-amber-400 transition-all cursor-pointer flex items-center space-x-3 active:scale-98">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg font-black">
+                                📝
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-extrabold text-xs text-slate-800">5. KUIS & EVALUASI</h4>
+                                <p class="text-[11px] text-slate-500">Uji pemahaman 10 soal pilihan ganda interaktif.</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Progress Overview Card -->
+                <div class="bg-white p-4 rounded-3xl shadow-xs border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h4 class="text-xs font-black uppercase text-slate-700 tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-line text-amber-600"></i> PROGRES BELAJAR SISWA
+                        </h4>
+                        <span id="dashTotalPercent" class="text-xs font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">
+                            0% Selesai
+                        </span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-600 mb-1">
+                                <span>Materi Tari & Musik Dibaca</span>
+                                <span id="dashMateriStatus">0 / 8 Topik</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div id="dashMateriBar" class="bg-amber-500 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-600 mb-1">
+                                <span>Skor Kuis Terbaik</span>
+                                <span id="dashQuizStatus">0 Poin</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div id="dashQuizBar" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 3: CP & TP                          -->
+            <!-- ========================================== -->
+            <section id="screen-cptp" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-black text-slate-800 font-display flex items-center gap-2">
+                            <span>🎯 CAPAIAN & TUJUAN</span>
+                        </h2>
+                        <p class="text-xs text-slate-500">Standar Kurikulum Merdeka Seni Budaya</p>
+                    </div>
+                    <span class="bg-amber-100 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-300">
+                        FASE D & E
+                    </span>
+                </div>
+
+                <!-- Capaian Pembelajaran (CP) Box -->
+                <div class="bg-white rounded-3xl p-4 shadow-xs border border-amber-200 space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                        <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-sm">
+                            📜
+                        </div>
+                        <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider">Capaian Pembelajaran (CP)</h3>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed bg-amber-50/50 p-3 rounded-2xl border border-amber-100">
+                        Pada akhir fase, peserta didik mampu mengapresiasi, menganalisis unsur estetis, serta mengekspresikan ragam gerak <strong>Tari Tradisional</strong> dan ragam pertunjukan <strong>Musik Nusantara</strong> sesuai dengan konteks kebudayaan masyarakat pemiliknya.
+                    </p>
+                </div>
+
+                <!-- 4 Elemen Pembelajaran Grid -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 px-1">4 Elemen Pembelajaran Seni</h3>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-1">
+                            <span class="text-amber-700 font-black text-xs block">1. Mengalami (Experiencing)</span>
+                            <p class="text-[11px] text-slate-600">Mengamati dan mengidentifikasi unsur utama tari serta karakteristik alat musik tradisional.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-1">
+                            <span class="text-rose-700 font-black text-xs block">2. Menciptakan (Creating)</span>
+                            <p class="text-[11px] text-slate-600">Mencoba eksplorasi pola lantai sederhana dan memainkan pola ritmis instrumen.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-1">
+                            <span class="text-emerald-700 font-black text-xs block">3. Merefleksikan (Reflecting)</span>
+                            <p class="text-[11px] text-slate-600">Menilai nilai estetis dan fungsi pertunjukan tari serta musik Nusantara.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-1">
+                            <span class="text-purple-700 font-black text-xs block">4. Berdampak (Impacting)</span>
+                            <p class="text-[11px] text-slate-600">Menumbuhkan rasa bangga dan kepedulian menumbuhkan kebudayaan lokal.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tujuan Pembelajaran (TP) List -->
+                <div class="bg-white rounded-3xl p-4 shadow-xs border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">
+                            ✅
+                        </div>
+                        <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider">Tujuan Pembelajaran (TP)</h3>
+                    </div>
+
+                    <ul class="space-y-2 text-xs text-slate-700">
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 mt-0.5 text-xs"></i>
+                            <span>Siswa mampu menjelaskan 3 unsur utama tari (Wiraga, Wirama, Wirasa) dengan benar.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 mt-0.5 text-xs"></i>
+                            <span>Siswa mampu mengidentifikasi variasi pola lantai dan properti tari tradisional.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 mt-0.5 text-xs"></i>
+                            <span>Siswa mampu mengklasifikasikan alat musik berdasarkan sumber bunyinya (Idiofon, Membranofon, dll).</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 mt-0.5 text-xs"></i>
+                            <span>Siswa mampu mempraktikkan pengenalan tangga nada slendro dan pelog melalui studio virtual.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CTA to Start Learning -->
+                <button onclick="navigateTo('materi')" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-3 rounded-2xl shadow-md transition-all text-xs tracking-wider uppercase flex items-center justify-center space-x-2">
+                    <span>LANJUT KE MATERI LENGKAP</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+            </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 4: MATERI SENI TARI & MUSIK         -->
+            <!-- ========================================== -->
+            <section id="screen-materi" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <!-- Screen Header & Category Selector -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-black text-slate-800 font-display">📚 MATERI PEMBELAJARAN</h2>
+                        <span id="materiTopicBadge" class="text-[10px] font-black bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">Topik 1/8</span>
+                    </div>
+
+                    <!-- Category Tab Filter -->
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-200/80 rounded-2xl text-xs font-bold">
+                        <button id="btnTabTari" onclick="switchMateriCategory('tari')" class="py-2 rounded-xl text-amber-900 bg-white shadow-xs transition-all text-center">
+                            💃 SENI TARI
+                        </button>
+                        <button id="btnTabMusik" onclick="switchMateriCategory('musik')" class="py-2 rounded-xl text-slate-600 hover:text-amber-900 transition-all text-center">
+                            🪕 SENI MUSIK
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC MATERIAL READER CONTAINER -->
+                <div id="materiReaderBox" class="bg-white rounded-3xl p-4 shadow-xs border border-amber-200 space-y-4">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <div id="matReaderIcon" class="w-12 h-12 bg-amber-100 text-amber-800 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-xs">
+                                💃
+                            </div>
+                            <div>
+                                <span id="matReaderCategory" class="text-[10px] uppercase font-bold text-amber-700 tracking-wider">SENI TARI • TOPIK 1</span>
+                                <h3 id="matReaderTitle" class="text-base font-black text-slate-800 leading-tight">UNSUR UTAMA SENI TARI</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Material Image Illustration -->
+                    <div class="rounded-2xl border border-slate-200 overflow-hidden bg-slate-50 p-2 text-center">
+                        <img id="matReaderImage" src="https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500&auto=format&fit=crop&q=60" alt="Ilustrasi Tari Tradisional" class="w-full max-h-48 object-cover rounded-xl mx-auto shadow-2xs">
+                        <span id="matReaderCaption" class="text-[10px] text-slate-500 font-semibold block mt-1.5 italic">
+                            Penjelasan visual ragam gerak seni tari
+                        </span>
+                    </div>
+
+                    <!-- Material Explanation Body -->
+                    <div class="space-y-3 text-xs leading-relaxed text-slate-700">
+                        <div class="bg-amber-50/70 p-3 rounded-2xl border border-amber-100 space-y-1">
+                            <h4 class="font-bold text-amber-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb text-amber-600"></i> Konsep Utama
+                            </h4>
+                            <p id="matReaderConcept">
+                                Seni tari adalah ungkapan perasaan manusia yang disalurkan melalui gerak tubuh yang indah dan berirama.
+                            </p>
+                        </div>
+
+                        <div class="bg-blue-50/70 p-3 rounded-2xl border border-blue-100 space-y-1">
+                            <h4 class="font-bold text-blue-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-layer-group text-blue-600"></i> Poin Pembahasan
+                            </h4>
+                            <ul id="matReaderPoints" class="list-disc list-inside space-y-1 text-slate-700">
+                                <li>Wiraga (Raga/Gerak tubuh)</li>
+                                <li>Wirama (Irama/Musik pengiring)</li>
+                                <li>Wirasa (Rasa/Penghayatan emosi)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Quick Check Inside Materi -->
+                    <div class="bg-rose-50 rounded-2xl p-3 border border-rose-200 space-y-2">
+                        <span class="text-[10px] font-black uppercase text-rose-800 tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-bolt text-rose-600"></i> Coba Pemahaman Cepat
+                        </span>
+                        <p id="matMiniQuestion" class="text-xs font-bold text-slate-800">
+                            Manakah unsur tari yang berhubungan dengan keselarasan gerak dengan musik?
+                        </p>
+                        <div id="matMiniOptions" class="grid grid-cols-2 gap-1.5 text-xs">
+                            <!-- Dynamic mini buttons -->
+                        </div>
+                        <div id="matMiniFeedback" class="hidden text-[11px] font-bold p-2 rounded-xl text-center"></div>
+                    </div>
+
+                    <!-- Next & Previous Buttons -->
+                    <div class="flex items-center justify-between pt-1">
+                        <button id="btnPrevMat" onclick="navigateMaterial(-1)" class="bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 text-xs font-bold py-2.5 px-4 rounded-xl transition-all flex items-center space-x-1">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>PREV</span>
+                        </button>
+                        <button id="btnNextMat" onclick="navigateMaterial(1)" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center space-x-1">
+                            <span>NEXT</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scrollable Topic List Selector -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 px-1">Daftar Seluruh Topik Materi</h3>
+                    <div id="materiTopicsList" class="space-y-2">
+                        <!-- Rendered by JavaScript -->
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 5: STUDIO TRADISIONAL INTERAKTIF    -->
+            <!-- ========================================== -->
+            <section id="screen-studio" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-black text-slate-800 font-display">🎹 STUDIO VIRTUAL</h2>
+                        <p class="text-xs text-slate-500">Mencoba Nada Alat Musik Tradisional</p>
+                    </div>
+                    <span class="bg-purple-100 text-purple-900 text-[10px] font-black px-2.5 py-1 rounded-full border border-purple-300">
+                        WEB AUDIO
+                    </span>
+                </div>
+
+                <!-- Instrument Selector -->
+                <div class="grid grid-cols-2 gap-2 bg-slate-200/80 p-1 rounded-2xl text-xs font-bold">
+                    <button id="btnInstGamelan" onclick="selectStudioInstrument('gamelan')" class="py-2 rounded-xl text-purple-900 bg-white shadow-xs transition-all text-center">
+                        🔔 GAMELAN SARON
+                    </button>
+                    <button id="btnInstAngklung" onclick="selectStudioInstrument('angklung')" class="py-2 rounded-xl text-slate-600 hover:text-purple-900 transition-all text-center">
+                        🎋 ANGKLUNG BAMBU
+                    </button>
+                </div>
+
+                <!-- Studio Card Display -->
+                <div class="bg-white rounded-3xl p-4 shadow-xs border border-purple-200 space-y-4 text-center">
+                    <div>
+                        <span id="studioInstBadge" class="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
+                            Tangga Nada Slendro / Pelog
+                        </span>
+                        <h3 id="studioInstTitle" class="text-lg font-black text-slate-800 mt-2 font-display">
+                            GAMELAN SARON NUSANTARA
+                        </h3>
+                        <p id="studioInstDesc" class="text-xs text-slate-500 max-w-xs mx-auto mt-1">
+                            Ketuk bilah-bilah gamelan di bawah ini untuk membunyikan alunan nada tradisional!
+                        </p>
+                    </div>
+
+                    <!-- Interactive Instrument Keys Keyboard -->
+                    <div id="studioKeysContainer" class="py-4 px-2 bg-gradient-to-b from-amber-950 to-stone-900 rounded-2xl border-4 border-amber-800 shadow-inner flex justify-center space-x-1.5 overflow-x-auto">
+                        <!-- Keys dynamically injected by JS -->
+                    </div>
+
+                    <!-- Sound Feedback Status -->
+                    <div class="bg-purple-50 p-3 rounded-2xl border border-purple-100 flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-600">NADA TERAKHIR:</span>
+                        <span id="studioLastNote" class="font-black text-purple-800 bg-white px-3 py-1 rounded-xl shadow-2xs border border-purple-200">
+                            - (Belum Ditabuh)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Musical Scales Explanation Card -->
+                <div class="bg-white rounded-3xl p-4 shadow-xs border border-slate-200 space-y-2 text-xs">
+                    <h4 class="font-black text-slate-800 text-xs flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-music text-purple-600"></i> FAKTA TANGGA NADA TRADISIONAL
+                    </h4>
+                    <div class="grid grid-cols-2 gap-2 pt-1 text-slate-700">
+                        <div class="bg-purple-50/50 p-2.5 rounded-2xl border border-purple-100">
+                            <span class="font-extrabold text-purple-900 block">Tangga Nada Slendro</span>
+                            <span class="text-[11px] text-slate-600">Memiliki 5 nada per oktaf (Pentatonis) dengan interval yang relatif sama.</span>
+                        </div>
+                        <div class="bg-amber-50/50 p-2.5 rounded-2xl border border-amber-100">
+                            <span class="font-extrabold text-amber-900 block">Tangga Nada Pelog</span>
+                            <span class="text-[11px] text-slate-600">Memiliki 7 nada per oktaf dengan susunan interval yang khas dan tenang.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 6: KUIS & EVALUASI INTERAKTIF       -->
+            <!-- ========================================== -->
+            <section id="screen-kuis" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <!-- Quiz Playing View -->
+                <div id="quizPlayArea" class="space-y-4">
+                    
+                    <!-- Header Bar -->
+                    <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase text-amber-700 tracking-wider">EVALUASI SENI BUDAYA</span>
+                            <h3 id="quizStageLabel" class="text-sm font-black text-slate-800 font-display">SOAL 1 DARI 10</h3>
+                        </div>
+                        <div class="text-right">
+                            <div id="quizLives" class="flex space-x-1 text-rose-500 text-xs mb-0.5 justify-end">
+                                <i class="fa-solid fa-heart"></i>
+                                <i class="fa-solid fa-heart"></i>
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <span class="text-xs font-black text-slate-800">SKOR: <span id="quizScoreDisplay" class="text-amber-600 font-extrabold">0</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-bold text-slate-500">
+                            <span id="quizProgressText">SOAL 1/10</span>
+                            <span id="quizPercentText">10%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div id="quizProgressBar" class="bg-amber-600 h-full w-10 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div class="bg-white p-4 rounded-3xl shadow-xs border border-amber-200 space-y-4">
+                        <p id="quizQuestionText" class="text-xs font-extrabold text-slate-800 leading-snug">
+                            Apa yang dimaksud dengan unsur Wiraga dalam seni tari?
+                        </p>
+
+                        <!-- Answer Options Buttons -->
+                        <div id="quizOptionsContainer" class="space-y-2">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+
+                        <!-- Feedback Box -->
+                        <div id="quizFeedbackBox" class="hidden p-3 rounded-2xl text-xs space-y-1 border">
+                            <div id="quizFeedbackTitle" class="font-black">✓ JAWABAN BENAR!</div>
+                            <p id="quizFeedbackDesc" class="text-slate-700 leading-relaxed"></p>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button id="btnQuizAction" onclick="handleQuizSubmit()" class="w-full bg-amber-600 hover:bg-amber-700 active:scale-98 text-white font-black py-3 rounded-2xl shadow-md transition-all text-xs tracking-wider uppercase">
+                            JAWAB
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results Summary Screen -->
+                <div id="quizResultArea" class="hidden bg-white rounded-3xl p-5 shadow-md border border-amber-300 text-center space-y-4 slide-up">
+                    <div class="text-5xl bounce-slow">🏆</div>
+                    <div>
+                        <span class="text-[10px] font-black uppercase text-amber-800 bg-amber-100 px-3 py-1 rounded-full">REKAP EVALUASI</span>
+                        <h3 id="resStudentName" class="text-lg font-black text-slate-800 font-display mt-2">SELAMAT, SISWA!</h3>
+                        <p class="text-xs text-slate-500">Hasil Kuis Seni Tari & Musik Nusantara</p>
+                    </div>
+
+                    <!-- Star rating -->
+                    <div id="quizStarsContainer" class="flex justify-center space-x-2 text-2xl text-amber-400">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
+                    </div>
+
+                    <!-- Score Box -->
+                    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 space-y-2">
+                        <span class="text-[10px] font-black uppercase text-amber-800 tracking-wider">TOTAL SKOR</span>
+                        <div id="resQuizScore" class="text-4xl font-black text-amber-700 font-display">80</div>
+                        
+                        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-amber-200 text-xs font-bold">
+                            <div class="bg-white p-2 rounded-xl shadow-2xs">
+                                <span class="text-[9px] text-slate-400 block">BENAR</span>
+                                <span id="resQuizCorrect" class="text-emerald-600 font-black">8</span>
+                            </div>
+                            <div class="bg-white p-2 rounded-xl shadow-2xs">
+                                <span class="text-[9px] text-slate-400 block">SALAH</span>
+                                <span id="resQuizIncorrect" class="text-rose-600 font-black">2</span>
+                            </div>
+                            <div class="bg-white p-2 rounded-xl shadow-2xs">
+                                <span class="text-[9px] text-slate-400 block">PERSEN</span>
+                                <span id="resQuizPercent" class="text-amber-700 font-black">80%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Motivational Quote -->
+                    <p id="resQuizMsg" class="text-xs font-semibold text-slate-700 bg-amber-100/50 p-3 rounded-2xl border border-amber-200">
+                        Luar biasa! Kamu memahami ragam kebudayaan Nusantara.
+                    </p>
+
+                    <!-- Reset or Back buttons -->
+                    <div class="space-y-2">
+                        <button onclick="resetQuiz()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-2xl shadow-md transition-all text-xs tracking-wider uppercase">
+                            COBA KUIS LAGI
+                        </button>
+                        <button onclick="navigateTo('dashboard')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-2xl transition-all text-xs">
+                            KEMBALI KE MENU UTAMA
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ========================================== -->
+            <!-- SCREEN 7: PROFIL & MEDIA INFO              -->
+            <!-- ========================================== -->
+            <section id="screen-profil" class="screen-view p-4 space-y-4 hidden fade-in">
+                
+                <!-- Profile Header -->
+                <div class="bg-white rounded-3xl p-5 shadow-xs border border-amber-200 text-center space-y-3">
+                    <div class="w-20 h-20 bg-amber-100 text-amber-800 rounded-full mx-auto flex items-center justify-center text-3xl shadow-inner border-2 border-amber-300">
+                        🎭
+                    </div>
+                    <div>
+                        <h3 id="profileNameDisplay" class="text-lg font-black text-slate-800 font-display">Nama Siswa</h3>
+                        <p class="text-xs font-bold text-amber-700 uppercase tracking-wider">“Siswa Pelestari Seni Budaya”</p>
+                        <span class="inline-block mt-2 bg-amber-100 text-amber-900 text-[10px] font-black px-3 py-1 rounded-full">
+                            VERSI 1.0 (KURIKULUM MERDEKA)
+                        </span>
+                    </div>
+                    <button onclick="openNameModal()" class="w-full bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs py-2 rounded-xl border border-amber-300 transition-all">
+                        <i class="fa-solid fa-pen mr-1"></i> Ubah Nama Siswa
+                    </button>
+                </div>
+
+                <!-- Media Info -->
+                <div class="bg-white rounded-3xl p-4 shadow-xs border border-slate-200 space-y-3 text-xs">
+                    <h4 class="font-black text-slate-800 text-xs flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-circle-info text-amber-600"></i> Tentang Aplikasi ARSEKA
+                    </h4>
+                    <p class="text-slate-600 leading-relaxed">
+                        ARSEKA (Aplikasi Edukasi Seni Budaya Nusantara) dirancang khusus untuk mempermudah pemahaman siswa jenjang SMP/SMA mengenai keberagaman Tari dan Musik Tradisional Indonesia.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                            <span class="text-[9px] text-slate-400 font-bold block">SASARAN</span>
+                            <span class="font-black text-slate-800">Siswa SMP / SMA</span>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                            <span class="text-[9px] text-slate-400 font-bold block">MATA PELAJARAN</span>
+                            <span class="font-black text-slate-800">Seni Budaya</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Checklist -->
+                <div class="bg-white rounded-3xl p-4 shadow-xs border border-slate-200 space-y-2 text-xs">
+                    <h4 class="font-black text-slate-800 text-xs flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-list-check text-emerald-600"></i> Fitur Utama Media
+                    </h4>
+                    <div class="grid grid-cols-2 gap-2 pt-1 text-slate-700 font-medium">
+                        <div class="flex items-center space-x-1.5"><i class="fa-solid fa-check text-emerald-500"></i> <span>Daftar Isi & CP/TP</span></div>
+                        <div class="flex items-center space-x-1.5"><i class="fa-solid fa-check text-emerald-500"></i> <span>Materi Seni Tari</span></div>
+                        <div class="flex items-center space-x-1.5"><i class="fa-solid fa-check text-emerald-500"></i> <span>Materi Seni Musik</span></div>
+                        <div class="flex items-center space-x-1.5"><i class="fa-solid fa-check text-emerald-500"></i> <span>Studio Gamelan</span></div>
+                        <div class="flex items-center space-x-1.5"><i class="fa-solid fa-check text-emerald-500"></i> <span>Angklung Virtual</span></div>
+                        <div class="flex items-center space-x-1.5"><i class="fa-solid fa-check text-emerald-500"></i> <span>Kuis 10 Soal</span></div>
+                    </div>
+                </div>
+
+                <!-- Developer Footer -->
+                <div class="bg-amber-950 text-amber-200 rounded-3xl p-4 text-center shadow-xs border border-amber-800">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block">MEDIA EDUKASI SENI BUDAYA</span>
+                    <h4 class="text-sm font-black text-white mt-0.5">Dikembangkan untuk Pembelajaran Interaktif</h4>
+                    <p class="text-[11px] text-amber-300/80 mt-1">Nusantara Art & Cultural Media Studio</p>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- STICKY BOTTOM NAVIGATION BAR -->
+        <div id="bottomNavBar" class="hidden absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-amber-200/80 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
+            
+            <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-amber-800 font-bold bg-amber-100 transition-all">
+                <i class="fa-solid fa-compass text-base mb-0.5"></i>
+                <span class="text-[10px]">MENU</span>
+            </button>
+
+            <button onclick="navigateTo('cptp')" id="nav-cptp" class="nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-400 hover:text-amber-700 transition-all">
+                <i class="fa-solid fa-bullseye text-base mb-0.5"></i>
+                <span class="text-[10px]">CP & TP</span>
+            </button>
+
+            <button onclick="navigateTo('materi')" id="nav-materi" class="nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-400 hover:text-amber-700 transition-all">
+                <i class="fa-solid fa-book-open text-base mb-0.5"></i>
+                <span class="text-[10px]">MATERI</span>
+            </button>
+
+            <button onclick="navigateTo('studio')" id="nav-studio" class="nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-400 hover:text-amber-700 transition-all">
+                <i class="fa-solid fa-guitar text-base mb-0.5"></i>
+                <span class="text-[10px]">STUDIO</span>
+            </button>
+
+            <button onclick="navigateTo('kuis')" id="nav-kuis" class="nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-400 hover:text-amber-700 transition-all">
+                <i class="fa-solid fa-pen-to-square text-base mb-0.5"></i>
+                <span class="text-[10px]">KUIS</span>
+            </button>
+
+            <button onclick="navigateTo('profil')" id="nav-profil" class="nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-400 hover:text-amber-700 transition-all">
+                <i class="fa-solid fa-user text-base mb-0.5"></i>
+                <span class="text-[10px]">PROFIL</span>
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+        /* -------------------------------------------------------------
+           APPLICATION STATE DATA & DATASTRUCTURES
+        ------------------------------------------------------------- */
+        let studentName = "Siswa Nusantara";
+        let currentScreen = "splash";
+        let currentMateriCategory = "tari"; // 'tari' or 'musik'
+        let currentMateriIndex = 0;
+        let readMaterialsSet = new Set([0]);
+
+        // Materials Database (4 Tari + 4 Musik = 8 Total)
+        const materialsData = {
+            tari: [
+                {
+                    title: "UNSUR UTAMA SENI TARI",
+                    icon: "💃",
+                    categoryLabel: "SENI TARI • TOPIK 1",
+                    image: "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500&auto=format&fit=crop&q=60",
+                    caption: "Ragam keindahan ekspresi gerak tari tradisional",
+                    concept: "Gerak adalah medium utama dalam seni tari. Keindahan seni tari didukung oleh tiga elemen dasar utama (Wiraga, Wirama, Wirasa).",
+                    points: [
+                        "Wiraga: Keterampilan fisik tubuh dan penguasaan teknik gerak.",
+                        "Wirama: Keselarasan ritme gerak dengan irama musik pengiring.",
+                        "Wirasa: Penghayatan jiwa, ekspresi wajah, dan penjiwaan karakter."
+                    ],
+                    mini: {
+                        q: "Unsur tari yang berkaitan langsung dengan hafalan gerak tubuh dinamakan...",
+                        options: ["Wiraga", "Wirama", "Wirasa", "Riasan"],
+                        correct: 0
+                    }
+                },
+                {
+                    title: "POLA LANTAI DARI SENI TARI",
+                    icon: "📐",
+                    categoryLabel: "SENI TARI • TOPIK 2",
+                    image: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=500&auto=format&fit=crop&q=60",
+                    caption: "Ilustrasi formasi posisi penari di atas panggung",
+                    concept: "Pola lantai adalah garis yang dilalui penari saat melakukan gerak tari di atas panggung, menciptakan estetika kelompok.",
+                    points: [
+                        "Garis Lurus (Lurus, Diagonal, Zig-zag): Berkesan tegas, kuat, dan formal.",
+                        "Garis Lengkung (Lingkaran, Lengkung Depan): Berkesan lembut, ramah, dan magis.",
+                        "Contoh: Tari Saman (Garis Lurus Horisontal), Tari Kecak (Garis Lengkung Lingkaran)."
+                    ],
+                    mini: {
+                        q: "Tari Kecak dari Bali menggunakan formasi pola lantai...",
+                        options: ["Garis Lurus", "Lingkaran", "Zig-zag", "Segitiga"],
+                        correct: 1
+                    }
+                },
+                {
+                    title: "PROPERTI & TATA RIAS TARI",
+                    icon: "👑",
+                    categoryLabel: "SENI TARI • TOPIK 3",
+                    image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&auto=format&fit=crop&q=60",
+                    caption: "Penggunaan tata busana, mahkota, dan benda pendukung tari",
+                    concept: "Properti tari adalah perlengkapan yang digunakan penari untuk memperkuat karakter dan memperjelas pesan cerita.",
+                    points: [
+                        "Contoh Properti: Piring (Tari Piring), Payung (Tari Payung), Kipas, Selendang, Topeng.",
+                        "Tata Rias & Busana: Menegaskan usia, jenis kelamin, dan watak tokoh (Dewa, Kerajaan, Raksasa)."
+                    ],
+                    mini: {
+                        q: "Properti utama yang digunakan pada Tari Piring dari Sumatra Barat adalah...",
+                        options: ["Keris", "Piring", "Payung", "Kipas"],
+                        correct: 1
+                    }
+                },
+                {
+                    title: "RAGAM TARI TRADISIONAL",
+                    icon: "🇮🇩",
+                    categoryLabel: "SENI TARI • TOPIK 4",
+                    image: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=500&auto=format&fit=crop&q=60",
+                    caption: "Keanekaragaman tarian daerah dari Sabang sampai Merauke",
+                    concept: "Tari tradisional dikelompokkan berdasarkan jumlah penari dan fungsi sosial pertunjukannya di masyarakat.",
+                    points: [
+                        "Tari Tunggal: Dibawakan oleh satu orang penari (Contoh: Tari Topeng Kelana).",
+                        "Tari Berpasangan: Dibawakan berdua dan berinteraksi (Contoh: Tari Payung).",
+                        "Tari Kelompok: Dibawakan secara masal bersama-sama (Contoh: Tari Saman, Tari Pendet)."
+                    ],
+                    mini: {
+                        q: "Tari Pendet dari Bali tergolong tarian yang dibawakan secara...",
+                        options: ["Tunggal", "Kelompok/Masal", "Solo", "Duet"],
+                        correct: 1
+                    }
+                }
+            ],
+            musik: [
+                {
+                    title: "SUMBER BUNYI ALAT MUSIK",
+                    icon: "🪕",
+                    categoryLabel: "SENI MUSIK • TOPIK 5",
+                    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=60",
+                    caption: "Klasifikasi instrumen musik tradisional Nusantara",
+                    concept: "Berdasarkan organologi dan sumber bunyinya, alat musik tradisional dibedakan menjadi 5 golongan utama.",
+                    points: [
+                        "Idiofon: Sumber bunyi dari badan alat musik itu sendiri (Contoh: Gamelan, Angklung, Kolintang).",
+                        "Membranofon: Sumber bunyi dari selaput/kulit (Contoh: Gendang, Tifa).",
+                        "Kordofon: Sumber bunyi dari dawai/senar (Contoh: Kecapi, Sasando).",
+                        "Aerofon: Sumber bunyi dari hembusan udara (Contoh: Suling, Saluang)."
+                    ],
+                    mini: {
+                        q: "Alat musik Tifa dan Gendang termasuk dalam kelompok sumber bunyi...",
+                        options: ["Idiofon", "Membranofon", "Kordofon", "Aerofon"],
+                        correct: 1
+                    }
+                },
+                {
+                    title: "FUNGSI MUSIK TRADISIONAL",
+                    icon: "🎺",
+                    categoryLabel: "SENI MUSIK • TOPIK 6",
+                    image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=500&auto=format&fit=crop&q=60",
+                    caption: "Peranan pertunjukan musik dalam kehidupan masyarakat",
+                    concept: "Musik tradisional bukan sekadar hiburan, melainkan memiliki fungsi adat dan simbol budaya yang mendalam.",
+                    points: [
+                        "Sarana Upacara Adat: Pengiring ritual keagamaan dan penyambutan tamu.",
+                        "Pengiring Tari & Teater: Memperkuat suasana dan tempo pertunjukan.",
+                        "Media Komunikasi & Hiburan: Penanda waktu dan sarana ekspresi masyarakat."
+                    ],
+                    mini: {
+                        q: "Musik pengiring pada pementasan Wayang Kulit berfungsi sebagai...",
+                        options: ["Hiasan belaka", "Pengiring irama & penyetabil suasana", "Pengganggu", "Olahraga"],
+                        correct: 1
+                    }
+                },
+                {
+                    title: "TANGGA NADA SLENDRO & PELOG",
+                    icon: "🎵",
+                    categoryLabel: "SENI MUSIK • TOPIK 7",
+                    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=500&auto=format&fit=crop&q=60",
+                    caption: "Tangga nada pentatonis khas karawitan Nusantara",
+                    concept: "Musik daerah seperti Gamelan Jawa dan Sunda menggunakan sistem tangga nada pentatonis yang khas.",
+                    points: [
+                        "Slendro: Memiliki 5 nada (1-2-3-5-6 / Ji-Ro-Lu-Ma-Nem) dengan karakter gembira dan lincah.",
+                        "Pelog: Memiliki 7 nada dengan susunan nada tenang, teratur, dan anggun."
+                    ],
+                    mini: {
+                        q: "Tangga nada pentatonis dengan 5 nada berkarakter gembira dinamakan...",
+                        options: ["Slendro", "Pelog", "Diatonis", "Mayor"],
+                        correct: 0
+                    }
+                },
+                {
+                    title: "INSTRUMEN KHAS DAERAH",
+                    icon: "🏝️",
+                    categoryLabel: "SENI MUSIK • TOPIK 8",
+                    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&auto=format&fit=crop&q=60",
+                    caption: "Kekayaan instrumen musik khas pulau-pulau Indonesia",
+                    concept: "Tiap provinsi memiliki alat musik khas yang terbuat dari bahan alam lokal seperti bambu, kayu, dan logam.",
+                    points: [
+                        "Angklung (Jawa Barat): Ditiup / digoyang dari bahan bambu.",
+                        "Sasando (Nusa Tenggara Timur): Alat musik petik berbahan daun lontar.",
+                        "Kolintang (Sulawesi Utara): Alat musik pukul berbahan kayu khas."
+                    ],
+                    mini: {
+                        q: "Alat musik Sasando yang dipetik berasal dari daerah...",
+                        options: ["Jawa Barat", "Nusa Tenggara Timur (NTT)", "Papua", "Aceh"],
+                        correct: 1
+                    }
+                }
+            ]
+        };
+
+        /* -------------------------------------------------------------
+           QUIZ STATE & QUESTIONS (10 Questions for SMP/SMA)
+        ------------------------------------------------------------- */
+        let quizCurrent = 1;
+        let quizScore = 0;
+        let quizCorrect = 0;
+        let quizIncorrect = 0;
+        let quizLivesCount = 3;
+        let quizAnswered = false;
+        let quizSelectedOpt = -1;
+        let bestQuizScore = 0;
+
+        const quizQuestions = [
+            {
+                q: "Elemen dasar seni tari yang berkaitan dengan keterampilan fisik tubuh penari dinamakan...",
+                options: ["A. Wirama", "B. Wiraga", "C. Wirasa", "D. Wirupa"],
+                correct: 1,
+                explain: "Wiraga adalah unsur raga/tubuh penari dalam menguasai keterampilan gerak tari."
+            },
+            {
+                q: "Garis lintang atau formasi posisi penari saat melakukan gerakan dinamakan...",
+                options: ["A. Tata Rias", "B. Pola Lantai", "C. Properti Tari", "D. Tata Panggung"],
+                correct: 1,
+                explain: "Pola lantai adalah lintasan formasi yang dilalui oleh para penari."
+            },
+            {
+                q: "Alat musik tradisional yang sumber bunyinya berasal dari getaran kulit selaput dinamakan...",
+                options: ["A. Idiofon", "B. Aerofon", "C. Membranofon", "D. Kordofon"],
+                correct: 2,
+                explain: "Membranofon menghasilkan bunyi dari membran/kulit yang ditepuk seperti gendang/tifa."
+            },
+            {
+                q: "Angklung adalah alat musik tradisional dari Jawa Barat yang berbahan dasar...",
+                options: ["A. Kayu Mahoni", "B. Bambu", "C. Logam Kuningan", "D. Daun Lontar"],
+                correct: 1,
+                explain: "Angklung terbuat dari pipa-pipa bambu yang menghasilkan bunyi saat digoyangkan."
+            },
+            {
+                q: "Tari Saman yang memiliki formasi garis lurus horisontal berasal dari daerah...",
+                options: ["A. Aceh", "B. Bali", "C. Jawa Tengah", "D. Papua"],
+                correct: 0,
+                explain: "Tari Saman merupakan tarian tradisional suku Gayo dari Provinsi Aceh."
+            },
+            {
+                q: "Tangga nada pentatonis khas Gamelan Jawa yang terdiri dari 5 nada dinamakan...",
+                options: ["A. Slendro", "B. Pelog", "C. Diatonis", "D. Kromatis"],
+                correct: 0,
+                explain: "Tangga nada Slendro terdiri dari 5 nada per oktaf dengan interval yang lincah."
+            },
+            {
+                q: "Contoh properti tari utama yang digunakan pada Tari Payung adalah...",
+                options: ["A. Piring", "B. Keris", "C. Payung", "D. Selendang Panjang"],
+                correct: 2,
+                explain: "Properti utama Tari Payung adalah payung sebagai simbol perlindungan."
+            },
+            {
+                q: "Alat musik Sasando yang dipetik dan menggunakan wadah daun lontar berasal dari...",
+                options: ["A. NTT", "B. Sulawesi Utara", "C. Sumatra Utara", "D. Kalimantan"],
+                correct: 0,
+                explain: "Sasando adalah alat musik petik khas dari Pulau Rote, Nusa Tenggara Timur (NTT)."
+            },
+            {
+                q: "Sikap penjiwaan, rasa, dan ekspresi karakter wajah penari disebut...",
+                options: ["A. Wiraga", "B. Wirama", "C. Wirasa", "D. Wirausaha"],
+                correct: 2,
+                explain: "Wirasa adalah unsur penghayatan emosi dan rasa dari penari."
+            },
+            {
+                q: "Alat musik yang sumber bunyinya berasal dari tiupan/hembusan udara disebut...",
+                options: ["A. Aerofon", "B. Idiofon", "C. Kordofon", "D. Elektrofon"],
+                correct: 0,
+                explain: "Aerofon memanfaatkan hembusan udara (seperti suling atau terompet)."
+            }
+        ];
+
+        /* -------------------------------------------------------------
+           WEB AUDIO API VIRTUAL INSTRUMENT SYNTHESIZER
+        ------------------------------------------------------------- */
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Unlock audio context on any initial user gesture anywhere on screen
+        document.addEventListener('pointerdown', function unlockAudio() {
+            initAudio();
+            if (audioCtx && audioCtx.state === 'running') {
+                document.removeEventListener('pointerdown', unlockAudio);
+            }
+        }, { passive: true });
+
+        function playSynthesizedNote(freq, type = 'gamelan') {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'gamelan') {
+                    // GAMELAN SARON: Metallic Bronze Bell Sound
+                    const masterGain = audioCtx.createGain();
+                    masterGain.connect(audioCtx.destination);
+                    
+                    // Attack & exponential decay curve
+                    masterGain.gain.setValueAtTime(0.0001, now);
+                    masterGain.gain.linearRampToValueAtTime(0.7, now + 0.01);
+                    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+
+                    // 1. Fundamental Pitch
+                    const osc1 = audioCtx.createOscillator();
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(freq, now);
+                    osc1.connect(masterGain);
+                    osc1.start(now);
+                    osc1.stop(now + 1.8);
+
+                    // 2. Warm Harmonic
+                    const osc2 = audioCtx.createOscillator();
+                    osc2.type = 'triangle';
+                    osc2.frequency.setValueAtTime(freq * 2, now);
+                    const gain2 = audioCtx.createGain();
+                    gain2.gain.setValueAtTime(0.3, now);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                    osc2.connect(gain2);
+                    gain2.connect(masterGain);
+                    osc2.start(now);
+                    osc2.stop(now + 1.2);
+
+                    // 3. Inharmonic Metallic Overtones (Bronze ring)
+                    const osc3 = audioCtx.createOscillator();
+                    osc3.type = 'sine';
+                    osc3.frequency.setValueAtTime(freq * 2.76, now);
+                    const gain3 = audioCtx.createGain();
+                    gain3.gain.setValueAtTime(0.25, now);
+                    gain3.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+                    osc3.connect(gain3);
+                    gain3.connect(masterGain);
+                    osc3.start(now);
+                    osc3.stop(now + 0.8);
+
+                } else {
+                    // ANGKLUNG BAMBU: Octave Bamboo Tubes + Tremolo Shaking (Goyangan Bambu)
+                    const masterGain = audioCtx.createGain();
+                    masterGain.connect(audioCtx.destination);
+
+                    masterGain.gain.setValueAtTime(0.0001, now);
+                    masterGain.gain.linearRampToValueAtTime(0.5, now + 0.02);
+                    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+
+                    // Tremolo LFO to simulate bamboo tube shaking
+                    const lfo = audioCtx.createOscillator();
+                    lfo.frequency.setValueAtTime(14, now); // 14 Hz shaking frequency
+                    const lfoGain = audioCtx.createGain();
+                    lfoGain.gain.setValueAtTime(0.35, now);
+                    lfo.connect(lfoGain);
+
+                    const tremoloGain = audioCtx.createGain();
+                    tremoloGain.gain.setValueAtTime(0.65, now);
+                    lfoGain.connect(tremoloGain.gain);
+                    tremoloGain.connect(masterGain);
+
+                    lfo.start(now);
+                    lfo.stop(now + 1.0);
+
+                    // Lower Octave Tube
+                    const tube1 = audioCtx.createOscillator();
+                    tube1.type = 'triangle';
+                    tube1.frequency.setValueAtTime(freq, now);
+                    tube1.connect(tremoloGain);
+                    tube1.start(now);
+                    tube1.stop(now + 1.0);
+
+                    // Higher Octave Tube (Angklung is tuned in octaves)
+                    const tube2 = audioCtx.createOscillator();
+                    tube2.type = 'sine';
+                    tube2.frequency.setValueAtTime(freq * 2, now);
+                    const tube2Gain = audioCtx.createGain();
+                    tube2Gain.gain.setValueAtTime(0.4, now);
+                    tube2.connect(tube2Gain);
+                    tube2Gain.connect(tremoloGain);
+                    tube2.start(now);
+                    tube2.stop(now + 1.0);
+                }
+            } catch (e) {
+                console.warn("Audio synthesizer error:", e);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           STUDENT NAME SYSTEM
+        ------------------------------------------------------------- */
+        function openNameModal() {
+            document.getElementById('studentNameInput').value = studentName;
+            document.getElementById('nameModalOverlay').classList.remove('hidden');
+        }
+
+        function saveStudentName() {
+            const inputVal = document.getElementById('studentNameInput').value.trim();
+            if (inputVal !== "") {
+                studentName = inputVal;
+            } else {
+                studentName = "Siswa Nusantara";
+            }
+
+            // Update displays
+            document.getElementById('dashGreetingName').innerText = `${studentName} 👋`;
+            document.getElementById('profileNameDisplay').innerText = studentName;
+            document.getElementById('resStudentName').innerText = `SELAMAT, ${studentName.toUpperCase()}!`;
+
+            document.getElementById('nameModalOverlay').classList.add('hidden');
+            showToast(`Nama disimpan: ${studentName}`, "fa-circle-check", "text-emerald-400");
+        }
+
+        /* -------------------------------------------------------------
+           NAVIGATION & SCREEN ROUTER
+        ------------------------------------------------------------- */
+        function navigateTo(screenId) {
+            currentScreen = screenId;
+
+            // Hide all screen sections
+            document.querySelectorAll('.screen-view').forEach(el => el.classList.add('hidden'));
+
+            // Show target screen
+            const target = document.getElementById(`screen-${screenId}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Toggle bottom nav visibility
+            const bottomNav = document.getElementById('bottomNavBar');
+            if (screenId === 'splash') {
+                bottomNav.classList.add('hidden');
+            } else {
+                bottomNav.classList.remove('hidden');
+            }
+
+            // Update bottom navigation bar button styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-400 hover:text-amber-700 transition-all";
+            });
+
+            const activeBtn = document.getElementById(`nav-${screenId}`);
+            if (activeBtn) {
+                activeBtn.className = "nav-btn flex flex-col items-center py-1 px-2 rounded-xl text-amber-900 font-black bg-amber-100 shadow-2xs transition-all";
+            }
+
+            // Trigger screen specific render functions
+            if (screenId === 'materi') renderMateriReader();
+            if (screenId === 'studio') renderStudioView();
+            if (screenId === 'kuis' && quizCurrent === 1 && quizScore === 0 && !quizAnswered) renderQuizQuestion();
+            if (screenId === 'dashboard') updateDashboardProgress();
+
+            document.getElementById('viewport').scrollTop = 0;
+        }
+
+        function startAppFromSplash() {
+            initAudio();
+            navigateTo('dashboard');
+            showToast("Selamat Datang di ARSEKA Seni Budaya!", "fa-masks-theater", "text-amber-400");
+        }
+
+        function showToast(msg, iconClass = "fa-circle-info", iconColor = "text-amber-400") {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            const icon = document.getElementById('toastIcon');
+            icon.className = `fa-solid ${iconClass} ${iconColor} text-base`;
+
+            toast.classList.remove('-translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        /* -------------------------------------------------------------
+           SCREEN 2: DASHBOARD PROGRESS
+        ------------------------------------------------------------- */
+        function updateDashboardProgress() {
+            const readCount = readMaterialsSet.size;
+            const totalCount = materialsData.tari.length + materialsData.musik.length;
+            const matPct = Math.round((readCount / totalCount) * 100);
+
+            document.getElementById('dashMateriStatus').innerText = `${readCount} / ${totalCount} Topik`;
+            document.getElementById('dashMateriBar').style.width = `${matPct}%`;
+
+            document.getElementById('dashQuizStatus').innerText = `${bestQuizScore} Poin`;
+            document.getElementById('dashQuizBar').style.width = `${bestQuizScore}%`;
+
+            const totalAvg = Math.round((matPct + bestQuizScore) / 2);
+            document.getElementById('dashTotalPercent').innerText = `${totalAvg}% Selesai`;
+        }
+
+        /* -------------------------------------------------------------
+           SCREEN 4: MATERI READER SYSTEM
+        ------------------------------------------------------------- */
+        function switchMateriCategory(cat) {
+            currentMateriCategory = cat;
+            currentMateriIndex = 0;
+
+            const btnTari = document.getElementById('btnTabTari');
+            const btnMusik = document.getElementById('btnTabMusik');
+
+            if (cat === 'tari') {
+                btnTari.className = "py-2 rounded-xl text-amber-900 bg-white shadow-xs transition-all text-center font-bold";
+                btnMusik.className = "py-2 rounded-xl text-slate-600 hover:text-amber-900 transition-all text-center";
+            } else {
+                btnMusik.className = "py-2 rounded-xl text-amber-900 bg-white shadow-xs transition-all text-center font-bold";
+                btnTari.className = "py-2 rounded-xl text-slate-600 hover:text-amber-900 transition-all text-center";
+            }
+
+            renderMateriReader();
+        }
+
+        function navigateToMateriTab(cat) {
+            switchMateriCategory(cat);
+            navigateTo('materi');
+        }
+
+        function renderMateriReader() {
+            const list = materialsData[currentMateriCategory];
+            const mat = list[currentMateriIndex];
+
+            // Mark as read
+            const globalIndex = currentMateriCategory === 'tari' ? currentMateriIndex : currentMateriIndex + 4;
+            readMaterialsSet.add(globalIndex);
+
+            document.getElementById('materiTopicBadge').innerText = `Topik ${globalIndex + 1}/8`;
+            document.getElementById('matReaderIcon').innerText = mat.icon;
+            document.getElementById('matReaderCategory').innerText = mat.categoryLabel;
+            document.getElementById('matReaderTitle').innerText = mat.title;
+
+            const imgEl = document.getElementById('matReaderImage');
+            imgEl.src = mat.image;
+            document.getElementById('matReaderCaption').innerText = mat.caption;
+
+            document.getElementById('matReaderConcept').innerText = mat.concept;
+
+            const pointsUl = document.getElementById('matReaderPoints');
+            pointsUl.innerHTML = mat.points.map(p => `<li>${p}</li>`).join('');
+
+            // Render Mini Check
+            document.getElementById('matMiniQuestion').innerText = mat.mini.q;
+            const optionsBox = document.getElementById('matMiniOptions');
+            optionsBox.innerHTML = mat.mini.options.map((opt, idx) => `
+                <button onclick="checkMateriMiniAnswer(${idx})" class="bg-white hover:bg-amber-100 text-slate-800 font-semibold p-2 rounded-xl border border-rose-200 text-left transition-all active:scale-95">
+                    ${opt}
+                </button>
+            `).join('');
+
+            const fbBox = document.getElementById('matMiniFeedback');
+            fbBox.className = "hidden text-[11px] font-bold p-2 rounded-xl text-center";
+
+            // Prev & Next Buttons
+            document.getElementById('btnPrevMat').disabled = (currentMateriIndex === 0);
+            document.getElementById('btnNextMat').disabled = (currentMateriIndex === list.length - 1);
+
+            // Render list topics selector below
+            const topicsContainer = document.getElementById('materiTopicsList');
+            topicsContainer.innerHTML = list.map((item, idx) => {
+                const isCurrent = idx === currentMateriIndex;
+                const itemGlobalIdx = currentMateriCategory === 'tari' ? idx : idx + 4;
+                const isRead = readMaterialsSet.has(itemGlobalIdx);
+
+                return `
+                    <div onclick="selectMateriIndex(${idx})" class="${isCurrent ? 'bg-amber-100 border-amber-500 shadow-xs' : 'bg-white border-slate-200'} p-3 rounded-2xl border flex items-center justify-between cursor-pointer hover:border-amber-400 transition-all active:scale-98">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xl">${item.icon}</span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-800">${itemGlobalIdx + 1}. ${item.title}</h4>
+                                <p class="text-[11px] text-slate-500 line-clamp-1">${item.concept}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            ${isRead ? '<i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>' : ''}
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateDashboardProgress();
+        }
+
+        function navigateMaterial(dir) {
+            const list = materialsData[currentMateriCategory];
+            const nextIdx = currentMateriIndex + dir;
+            if (nextIdx >= 0 && nextIdx < list.length) {
+                currentMateriIndex = nextIdx;
+                renderMateriReader();
+            }
+        }
+
+        function selectMateriIndex(idx) {
+            currentMateriIndex = idx;
+            renderMateriReader();
+            document.getElementById('materiReaderBox').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function checkMateriMiniAnswer(selectedIdx) {
+            const mat = materialsData[currentMateriCategory][currentMateriIndex];
+            const fbBox = document.getElementById('matMiniFeedback');
+            fbBox.classList.remove('hidden');
+
+            if (selectedIdx === mat.mini.correct) {
+                fbBox.className = "mt-2 text-[11px] font-bold p-2.5 rounded-xl text-center bg-emerald-100 text-emerald-900 border border-emerald-300";
+                fbBox.innerHTML = "✓ BENAR! Pemahaman konsepmu sangat tepat.";
+            } else {
+                fbBox.className = "mt-2 text-[11px] font-bold p-2.5 rounded-xl text-center bg-rose-100 text-rose-900 border border-rose-300";
+                fbBox.innerHTML = `✗ BELUM TEPAT. Jawaban benar: <strong>${mat.mini.options[mat.mini.correct]}</strong>`;
+            }
+        }
+
+        /* -------------------------------------------------------------
+           SCREEN 5: VIRTUAL STUDIO INSTRUMENT LOGIC
+        ------------------------------------------------------------- */
+        let activeStudioInst = "gamelan";
+
+        const gamelanNotes = [
+            { name: "1 (Ji)", freq: 261.63, label: "C" },
+            { name: "2 (Ro)", freq: 293.66, label: "D" },
+            { name: "3 (Lu)", freq: 329.63, label: "E" },
+            { name: "5 (Ma)", freq: 392.00, label: "G" },
+            { name: "6 (Nem)", freq: 440.00, label: "A" },
+            { name: "7 (Pi)", freq: 493.88, label: "B" }
+        ];
+
+        const angklungNotes = [
+            { name: "Do", freq: 261.63, label: "Low" },
+            { name: "Re", freq: 293.66, label: "Mid" },
+            { name: "Mi", freq: 329.63, label: "Mid" },
+            { name: "Fa", freq: 349.23, label: "Mid" },
+            { name: "Sol", freq: 392.00, label: "High" },
+            { name: "La", freq: 440.00, label: "High" }
+        ];
+
+        function selectStudioInstrument(inst) {
+            activeStudioInst = inst;
+            const btnG = document.getElementById('btnInstGamelan');
+            const btnA = document.getElementById('btnInstAngklung');
+
+            if (inst === 'gamelan') {
+                btnG.className = "py-2 rounded-xl text-purple-900 bg-white shadow-xs transition-all text-center font-bold";
+                btnA.className = "py-2 rounded-xl text-slate-600 hover:text-purple-900 transition-all text-center";
+            } else {
+                btnA.className = "py-2 rounded-xl text-purple-900 bg-white shadow-xs transition-all text-center font-bold";
+                btnG.className = "py-2 rounded-xl text-slate-600 hover:text-purple-900 transition-all text-center";
+            }
+
+            renderStudioView();
+        }
+
+        function renderStudioView() {
+            const badge = document.getElementById('studioInstBadge');
+            const title = document.getElementById('studioInstTitle');
+            const desc = document.getElementById('studioInstDesc');
+            const container = document.getElementById('studioKeysContainer');
+
+            if (activeStudioInst === 'gamelan') {
+                badge.innerText = "Tangga Nada Slendro / Pelog";
+                title.innerText = "GAMELAN SARON NUSANTARA";
+                desc.innerText = "Ketuk bilah logam gamelan saron untuk membunyikan alunan laras slendro!";
+
+                container.innerHTML = gamelanNotes.map((note, idx) => `
+                    <button onclick="playStudioKey('${note.name}', ${note.freq}, this)" class="w-12 h-32 bg-gradient-to-b from-amber-200 to-amber-400 hover:from-amber-100 hover:to-amber-300 active:scale-95 rounded-xl border-2 border-amber-600 shadow-md flex flex-col justify-between p-2 text-amber-950 font-black transition-all">
+                        <span class="text-[10px] opacity-70">${note.label}</span>
+                        <span class="text-xs font-display tracking-tight">${note.name}</span>
+                    </button>
+                `).join('');
+            } else {
+                badge.innerText = "Instrumen Bambu Jawa Barat";
+                title.innerText = "ANGKLUNG BAMBU TRADISIONAL";
+                desc.innerText = "Goyangkan bambu angklung interaktif untuk membunyikan nada diatonic!";
+
+                container.innerHTML = angklungNotes.map((note, idx) => `
+                    <button onclick="playStudioKey('${note.name}', ${note.freq}, this)" class="w-12 h-36 bg-gradient-to-b from-stone-600 to-stone-800 hover:from-stone-500 hover:to-stone-700 active:scale-95 rounded-xl border-2 border-stone-500 shadow-md flex flex-col justify-between p-2 text-amber-100 font-black transition-all">
+                        <span class="text-[10px] opacity-70">🎋</span>
+                        <span class="text-xs font-display tracking-tight">${note.name}</span>
+                    </button>
+                `).join('');
+            }
+        }
+
+        function playStudioKey(noteName, freq, element) {
+            playSynthesizedNote(freq, activeStudioInst);
+            document.getElementById('studioLastNote').innerText = `${noteName} (${freq.toFixed(0)} Hz)`;
+
+            if (element) {
+                element.classList.add('ring-4', 'ring-purple-400');
+                setTimeout(() => {
+                    element.classList.remove('ring-4', 'ring-purple-400');
+                }, 150);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           SCREEN 6: QUIZ & EVALUATION SYSTEM LOGIC
+        ------------------------------------------------------------- */
+        function renderQuizQuestion() {
+            const q = quizQuestions[quizCurrent - 1];
+            document.getElementById('quizStageLabel').innerText = `SOAL ${quizCurrent} DARI ${quizQuestions.length}`;
+            document.getElementById('quizProgressText').innerText = `SOAL ${quizCurrent}/${quizQuestions.length}`;
+
+            const pct = Math.round((quizCurrent / quizQuestions.length) * 100);
+            document.getElementById('quizPercentText').innerText = `${pct}%`;
+            document.getElementById('quizProgressBar').style.width = `${pct}%`;
+            document.getElementById('quizScoreDisplay').innerText = quizScore;
+
+            // Render Lives Hearts
+            let livesHtml = '';
+            for (let i = 0; i < 3; i++) {
+                if (i < quizLivesCount) livesHtml += '<i class="fa-solid fa-heart"></i>';
+                else livesHtml += '<i class="fa-regular fa-heart text-slate-300"></i>';
+            }
+            document.getElementById('quizLives').innerHTML = livesHtml;
+
+            document.getElementById('quizQuestionText').innerText = `${quizCurrent}. ${q.q}`;
+
+            quizSelectedOpt = -1;
+            quizAnswered = false;
+
+            const optContainer = document.getElementById('quizOptionsContainer');
+            optContainer.innerHTML = q.options.map((opt, idx) => `
+                <button onclick="selectQuizOption(${idx})" id="quiz-opt-${idx}" class="w-full text-left p-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold hover:bg-amber-50 hover:border-amber-300 transition-all flex items-center justify-between">
+                    <span>${opt}</span>
+                    <i class="fa-regular fa-circle text-slate-300 text-sm check-icon"></i>
+                </button>
+            `).join('');
+
+            document.getElementById('quizFeedbackBox').classList.add('hidden');
+            const actionBtn = document.getElementById('btnQuizAction');
+            actionBtn.innerText = "JAWAB";
+            actionBtn.className = "w-full bg-amber-600 hover:bg-amber-700 active:scale-98 text-white font-black py-3 rounded-2xl shadow-md transition-all text-xs tracking-wider uppercase";
+        }
+
+        function selectQuizOption(idx) {
+            if (quizAnswered) return;
+
+            quizSelectedOpt = idx;
+            document.querySelectorAll('#quizOptionsContainer button').forEach((btn, i) => {
+                if (i === idx) {
+                    btn.className = "w-full text-left p-3 rounded-2xl border-2 border-amber-600 bg-amber-100 text-amber-950 text-xs font-black shadow-2xs transition-all";
+                    btn.querySelector('.check-icon').className = "fa-solid fa-circle-check text-amber-700 text-sm check-icon";
+                } else {
+                    btn.className = "w-full text-left p-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold transition-all";
+                    btn.querySelector('.check-icon').className = "fa-regular fa-circle text-slate-300 text-sm check-icon";
+                }
+            });
+        }
+
+        function handleQuizSubmit() {
+            const actionBtn = document.getElementById('btnQuizAction');
+
+            if (quizAnswered) {
+                if (quizCurrent < quizQuestions.length) {
+                    quizCurrent++;
+                    renderQuizQuestion();
+                } else {
+                    showQuizResults();
+                }
+                return;
+            }
+
+            if (quizSelectedOpt === -1) {
+                showToast("Pilih salah satu jawaban dulu!", "fa-triangle-exclamation", "text-amber-500");
+                return;
+            }
+
+            quizAnswered = true;
+            const q = quizQuestions[quizCurrent - 1];
+            const fbBox = document.getElementById('quizFeedbackBox');
+            const fbTitle = document.getElementById('quizFeedbackTitle');
+            const fbDesc = document.getElementById('quizFeedbackDesc');
+            fbBox.classList.remove('hidden');
+
+            const isCorrect = quizSelectedOpt === q.correct;
+            const selectedBtn = document.getElementById(`quiz-opt-${quizSelectedOpt}`);
+
+            if (isCorrect) {
+                quizScore += 10;
+                quizCorrect++;
+                document.getElementById('quizScoreDisplay').innerText = quizScore;
+
+                selectedBtn.className = "w-full text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-950 text-xs font-black";
+                selectedBtn.querySelector('.check-icon').className = "fa-solid fa-circle-check text-emerald-600 text-sm check-icon";
+
+                fbBox.className = "p-3 rounded-2xl text-xs space-y-1 bg-emerald-50 border-emerald-300 text-emerald-900 border";
+                fbTitle.innerText = "✓ JAWABAN BENAR!";
+                fbDesc.innerText = q.explain;
+            } else {
+                quizIncorrect++;
+                if (quizLivesCount > 0) quizLivesCount--;
+
+                selectedBtn.className = "w-full text-left p-3 rounded-2xl border-2 border-rose-500 bg-rose-100 text-rose-950 text-xs font-black shake-err";
+                selectedBtn.querySelector('.check-icon').className = "fa-solid fa-circle-xmark text-rose-500 text-sm check-icon";
+
+                const correctBtn = document.getElementById(`quiz-opt-${q.correct}`);
+                if (correctBtn) {
+                    correctBtn.className = "w-full text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 text-xs font-bold";
+                }
+
+                fbBox.className = "p-3 rounded-2xl text-xs space-y-1 bg-rose-50 border-rose-300 text-rose-900 border";
+                fbTitle.innerText = "✗ JAWABAN KURANG TEPAT";
+                fbDesc.innerText = `Jawaban benar: ${q.options[q.correct]}\n\n${q.explain}`;
+            }
+
+            if (quizCurrent < quizQuestions.length) {
+                actionBtn.innerText = "SOAL BERIKUTNYA";
+                actionBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-2xl shadow-md transition-all text-xs tracking-wider uppercase";
+            } else {
+                actionBtn.innerText = "LIHAT REKAP HASIL";
+                actionBtn.className = "w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3 rounded-2xl shadow-md transition-all text-xs tracking-wider uppercase";
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quizPlayArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+
+            const pct = Math.round((quizCorrect / quizQuestions.length) * 100);
+
+            if (quizScore > bestQuizScore) {
+                bestQuizScore = quizScore;
+            }
+
+            document.getElementById('resStudentName').innerText = `SELAMAT, ${studentName.toUpperCase()}!`;
+            document.getElementById('resQuizScore').innerText = quizScore;
+            document.getElementById('resQuizCorrect').innerText = quizCorrect;
+            document.getElementById('resQuizIncorrect').innerText = quizIncorrect;
+            document.getElementById('resQuizPercent').innerText = `${pct}%`;
+
+            let starsCount = 1;
+            if (pct >= 81) starsCount = 5;
+            else if (pct >= 61) starsCount = 4;
+            else if (pct >= 41) starsCount = 3;
+            else if (pct >= 21) starsCount = 2;
+
+            const starBox = document.getElementById('quizStarsContainer');
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= starsCount) starsHtml += '<i class="fa-solid fa-star"></i>';
+                else starsHtml += '<i class="fa-regular fa-star text-slate-300"></i>';
+            }
+            starBox.innerHTML = starsHtml;
+
+            const msgEl = document.getElementById('resQuizMsg');
+            if (pct >= 80) {
+                msgEl.innerText = `Luar biasa ${studentName}! Pemahamanmu tentang Tari dan Musik Nusantara sangat memuaskan.`;
+            } else if (pct >= 60) {
+                msgEl.innerText = `Bagus ${studentName}! Tingkatkan terus pengetahuan seni budayamu.`;
+            } else {
+                msgEl.innerText = `Jangan berkecil hati ${studentName}. Pelajari kembali materi dan pelajari kuis lagi!`;
+            }
+
+            updateDashboardProgress();
+        }
+
+        function resetQuiz() {
+            quizCurrent = 1;
+            quizScore = 0;
+            quizCorrect = 0;
+            quizIncorrect = 0;
+            quizLivesCount = 3;
+            quizAnswered = false;
+            quizSelectedOpt = -1;
+
+            document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('quizPlayArea').classList.remove('hidden');
+
+            renderQuizQuestion();
+        }
+
+        /* -------------------------------------------------------------
+           INITIALIZATION ON LOAD
+        ------------------------------------------------------------- */
+        window.onload = function() {
+            // Live status bar time loop
+            setInterval(() => {
+                const now = new Date();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mm = String(now.getMinutes()).padStart(2, '0');
+                document.getElementById('topTime').innerText = `${hh}:${mm}`;
+            }, 1000);
+
+            // Default start screen
+            navigateTo('splash');
+        };
+    </script>
+</body>
+</html>
